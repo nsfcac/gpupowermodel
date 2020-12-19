@@ -345,7 +345,7 @@ def GPUCharacteristic2(pltPath):
     #,bbox_inches='tight'
     plt.legend(loc=0)
     plt.grid(True)
-    plt.savefig(pltPath+'exaflop-pwr.png')
+    plt.savefig(pltPath+'exaflop-pwr-usage.png')
 
 pltPath = "C:/rf/lbnl/plots/examples/"
 GPUCharacteristic2(pltPath)
