@@ -49,7 +49,7 @@ In order to generate the GPU metrics data and then perform different aspects of 
 
 ### clone the repository on the target GPU-enabled HPC node:
 ```
-git clone https://ghazanfarttu@bitbucket.org/sriduttb/gpupower.git
+git clone https://github.com/nsfcac/gpupowermodel.git
 ```
 
 ### Configuration of Utility Functions
