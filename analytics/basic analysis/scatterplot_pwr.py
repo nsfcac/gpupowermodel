@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from statistics import mean 
+import sys
 
 def readData(dataPathP100):
     freqs = [544, 556, 569, 582, 594, 607, 620, 632, 645, 658, 670, 683, 696, 708, 721, 734, 746, 759, 772, 784, 797, 810, 822, 835, 847, 860, 873, 885, 898, 911, 923, 936, 949, 961, 974, 987, 999, 1012, 1025, 1037, 1050, 1063, 1075, 1088, 1101, 1113, 1126, 1139, 1151, 1164, 1177, 1189, 1202, 1215, 1227, 1240, 1252, 1265, 1278, 1290, 1303, 1316, 1328]
@@ -146,9 +147,11 @@ def pltData ():
     pltPath = "C:/rf/lbnl/plots/examples/"
 
     fig, ax = plt.subplots(2, 2)
+    '''
     # DVFS for DGEMM on P100
     freqdata, mean_pwr, arch, app, pltPath,mode,tot_time = pltDVFSTimeIF (archP100, appDgemm, dataPathP100, pltPath,thresh)
     ax[0,0].plot(freqdata, mean_pwr,c='red',linestyle='dashed', marker='^', markersize=2)
+    
     # DVFS for DGEMM on V100
     thresh = 46
     freqdata, mean_pwr, arch, app, pltPath,mode,tot_time = pltDVFSTimeIF (archV100, appDgemm, dataPathV100, pltPath,thresh)
@@ -162,13 +165,14 @@ def pltData ():
     ax[0,1].set_title("NVIDIA GV100",weight='bold',fontsize=10)
     # plt.suptitle("CUBLAS DGEMM and BabelStream Power Consumption (W)",weight='bold', fontsize=12)
     #fig.savefig(pltPath+app+'_'+'PWR.png',bbox_inches='tight')
-
-
+    '''
+    
     #fig2, (ax11, ax22) = plt.subplots(1, 2,sharey=True)
     # DVFS for STREAM on P100
     thresh = 80
     freqdata, mean_pwr, arch, app, pltPath,mode,tot_time = pltDVFSTimeIF (archP100, appStream, dataPathP100, pltPath,thresh)
     ax[1,0].plot(freqdata, mean_pwr,c='red',linestyle='dashed', marker='^', markersize=2)
+    
     # DVFS for STREAM on V100
     thresh = 46
     freqdata, mean_pwr, arch, app, pltPath,mode,tot_time = pltDVFSTimeIF (archV100, appStream, dataPathV100, pltPath,thresh)

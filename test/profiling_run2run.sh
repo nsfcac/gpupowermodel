@@ -19,6 +19,7 @@ declare -a progs=("cuda-stream" "matrixMulCUBLAS") #executable name
 declare -a apps=("stream" "dgemm") #any name
 declare -a appParams=(" --device 1 -s 655360000 -n 1500 > results/BSRUN_OUT" " 72 > results/DGEMMRUN_OUT") # ex
 
+
 nRuns=$((numRuns-1))
 for i in $(seq 0 $nRuns)
 do
@@ -72,8 +73,7 @@ do
 		    IFS=' ' read -ra TIMEMS <<< "${DGEMM[1]}"
 		    echo "${FLOPS[1]} ${TIMEMS[1]}" >> results/run_perf_dvfs_$freq
 		fi
-		
-	    fi 
+        fi
 	done <"temp" # loop through supported frequency ranges
 	
 	# POWER Cap: 125 to 250 @ 5W increment

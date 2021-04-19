@@ -1,0 +1,503 @@
+valid,0
+
+"Full Results Table"
+
+Benchmark,"Base Ref Time","Est. Base Run Time","Est. Base Ratio","Base Selected","Base Status","Peak Ref Time","Est. Peak Run Time","Est. Peak Ratio","Peak Selected","Peak Status",Description
+101.tpacf,107,13.385784,7.993555,1,S,,,,,,,,,,,,"ref iteration #1"
+103.stencil,,,,,NR,,,,,NR
+104.lbm,,,,,NR,,,,,NR
+110.fft,,,,,NR,,,,,NR
+112.spmv,,,,,NR,,,,,NR
+114.mriq,,,,,NR,,,,,NR
+116.histo,,,,,NR,,,,,NR
+117.bfs,,,,,NR,,,,,NR
+118.cutcp,,,,,NR,,,,,NR
+120.kmeans,,,,,NR,,,,,NR
+121.lavamd,,,,,NR,,,,,NR
+122.cfd,,,,,NR,,,,,NR
+123.nw,,,,,NR,,,,,NR
+124.hotspot,,,,,NR,,,,,NR
+125.lud,,,,,NR,,,,,NR
+126.ge,,,,,NR,,,,,NR
+127.srad,,,,,NR,,,,,NR
+128.heartwall,,,,,NR,,,,,NR
+140.bplustree,,,,,NR,,,,,NR
+
+"Selected Results Table"
+
+Benchmark,"Base Ref Time","Est. Base Run Time","Est. Base Ratio","Base Selected","Base Status","Peak Ref Time","Est. Peak Run Time","Est. Peak Ratio","Peak Selected","Peak Status",Description
+101.tpacf,107,13.385784,7.993555,1,S,,,,,NR,"SelectedIteration (base #1)"
+103.stencil,,,,,NR,,,,,NR
+104.lbm,,,,,NR,,,,,NR
+110.fft,,,,,NR,,,,,NR
+112.spmv,,,,,NR,,,,,NR
+114.mriq,,,,,NR,,,,,NR
+116.histo,,,,,NR,,,,,NR
+117.bfs,,,,,NR,,,,,NR
+118.cutcp,,,,,NR,,,,,NR
+120.kmeans,,,,,NR,,,,,NR
+121.lavamd,,,,,NR,,,,,NR
+122.cfd,,,,,NR,,,,,NR
+123.nw,,,,,NR,,,,,NR
+124.hotspot,,,,,NR,,,,,NR
+125.lud,,,,,NR,,,,,NR
+126.ge,,,,,NR,,,,,NR
+127.srad,,,,,NR,,,,,NR
+128.heartwall,,,,,NR,,,,,NR
+140.bplustree,,,,,NR,,,,,NR
+
+SPECaccel_ocl_base,--,,--
+SPECaccel_ocl_peak,"Not Run",,,,,,,"Not Run"
+
+"Run number:",001
+
+"Hardware Vendor:","Computer System Incorporated"
+"Hardware Model:","Computer System XXX"
+"Date tested:",Jan-2021
+"ACCEL License:",
+"Test sponsor:","Computer System Incorporated"
+"Tested by:","Computer System Incorporated"
+"Hardware avail:",--
+"Software avail:",--
+
+
+HARDWARE
+
+"CPU Name","Intel Xeon E5-2670 v3"
+"CPU Characteristics"," "
+"CPU MHz",350
+"CPU MHz Maximum",--
+FPU,--
+"CPU(s) enabled","-1 cores, 2 chips, -1 cores/chip, -1 threads/core"
+"CPU(s) orderable",--
+"Primary Cache",--
+"Secondary Cache",--
+"L3 Cache",--
+"Other Cache",--
+Memory,"4 GB"
+,"125.533 GB fixme: If using DDR3, format is:"
+,"'N GB (M x N GB nRxn PCn-nnnnnR-n, ECC)'"
+"Disk Subsystem","932 GB  add more disk info here"
+"Other Hardware",--
+
+ACCELERATOR
+
+"Accel Model Name",--
+"Accel Vendor",--
+"Accel Name",--
+"Type of Accel",--
+"Accel Connection",--
+"Does Accel Use ECC",--
+"Accel Description",--
+"Accel Driver",--
+
+SOFTWARE
+
+"Operating System","Computer System Unix Version YYY"
+,"CentOS Linux release 7.9.2009 (Core)"
+,3.10.0-1160.11.1.el7.x86_64
+Compiler,"Computer System Compiler C and Fortran90"
+"File System",xfs
+"System State","Run level 3 (add definition here)"
+"Other Software",--
+
+"Platform Notes"
+
+" Sysinfo program /home/accel/Docs/sysinfo"
+" $Rev: 6965 $ $Date:: 2015-04-21 #$ c05a7f14b1b1765e3fe1df68447e8a35"
+" running on p100.novalocal Fri Jan  8 20:14:48 2021"
+
+" This section contains SUT (System Under Test) info as seen by"
+" some common utilities.  To remove or add to this section, see:"
+"   http://www.spec.org/accel/Docs/config.html#sysinfo"
+
+" From /proc/cpuinfo"
+"    model name : Intel(R) Xeon(R) CPU E5-2670 v3 @ 2.30GHz"
+"       2 ""physical id""s (chips)"
+"       48 ""processors"""
+"    cores, siblings (Caution: counting these is hw and system dependent.  The"
+"    following excerpts from /proc/cpuinfo might not be reliable.  Use with"
+"    caution.)"
+"       cpu cores : 12"
+"       siblings  : 24"
+"       physical 0: cores 0 1 2 3 4 5 8 9 10 11 12 13"
+"       physical 1: cores 0 1 2 3 4 5 8 9 10 11 12 13"
+"    cache size : 30720 KB"
+
+" From /proc/meminfo"
+"    MemTotal:       131631356 kB"
+"    HugePages_Total:       0"
+"    Hugepagesize:       2048 kB"
+
+" /usr/bin/lsb_release -d"
+"    CentOS Linux release 7.9.2009 (Core)"
+
+" From /etc/*release* /etc/*version*"
+"    centos-release: CentOS Linux release 7.9.2009 (Core)"
+"    centos-release-upstream: Derived from Red Hat Enterprise Linux 7.9 (Source)"
+"    os-release:"
+"       NAME=""CentOS Linux"""
+"       VERSION=""7 (Core)"""
+"       ID=""centos"""
+"       ID_LIKE=""rhel fedora"""
+"       VERSION_ID=""7"""
+"       PRETTY_NAME=""CentOS Linux 7 (Core)"""
+"       ANSI_COLOR=""0;31"""
+"       CPE_NAME=""cpe:/o:centos:centos:7"""
+"    redhat-release: CentOS Linux release 7.9.2009 (Core)"
+"    system-release: CentOS Linux release 7.9.2009 (Core)"
+"    system-release-cpe: cpe:/o:centos:centos:7"
+
+" uname -a:"
+"    Linux p100.novalocal 3.10.0-1160.11.1.el7.x86_64 #1 SMP Fri Dec 18 16:34:56"
+"    UTC 2020 x86_64 x86_64 x86_64 GNU/Linux"
+
+" run-level 3 Jan 8 18:12"
+
+" SPEC is set to: /home/accel"
+"    Filesystem     Type  Size  Used Avail Use% Mounted on"
+"    /dev/sda1      xfs   932G   22G  910G   3% /"
+" Additional information from dmidecode:"
+
+"    Warning: Use caution when you interpret this section. The 'dmidecode' program"
+"    reads system data which is ""intended to allow hardware to be accurately"
+"    determined"", but the intent may not be met, as there are frequent changes to"
+"    hardware, firmware, and the ""DMTF SMBIOS"" standard."
+
+"   BIOS Dell Inc. 2.8.0 005/17/2018"
+"   Memory:"
+"    8x 00AD00B300AD HMA42GR7MFR4N-TF 16 GB 2 rank 2133 MT/s"
+"    16x Not Specified Not Specified"
+
+" (End of data from sysinfo program)"
+
+"Base Runtime Environment"
+101.tpacf," OpenCL Platform: NVIDIA CUDA, OpenCL 1.2 CUDA 11.2.66"," OpenCL Device #0: Tesla P100-PCIE-16GB, v 460.27.04"
+103.stencil
+104.lbm
+110.fft
+112.spmv
+114.mriq
+116.histo
+117.bfs
+118.cutcp
+120.kmeans
+121.lavamd
+122.cfd
+123.nw
+124.hotspot
+125.lud
+126.ge
+127.srad
+128.heartwall
+140.bplustree
+
+"Base Compiler Invocation"
+101.tpacf," No flags used"
+103.stencil
+104.lbm
+110.fft
+112.spmv
+114.mriq
+116.histo
+117.bfs
+118.cutcp
+120.kmeans
+121.lavamd
+122.cfd
+123.nw
+124.hotspot
+125.lud
+126.ge
+127.srad
+128.heartwall
+140.bplustree
+
+"Base Portability Flags"
+101.tpacf
+103.stencil
+104.lbm
+110.fft
+112.spmv
+114.mriq
+116.histo
+117.bfs
+118.cutcp
+120.kmeans
+121.lavamd
+122.cfd
+123.nw
+124.hotspot
+125.lud
+126.ge
+127.srad
+128.heartwall
+140.bplustree
+
+"Base Optimization Flags"
+101.tpacf," No flags used"
+103.stencil
+104.lbm
+110.fft
+112.spmv
+114.mriq
+116.histo
+117.bfs
+118.cutcp
+120.kmeans
+121.lavamd
+122.cfd
+123.nw
+124.hotspot
+125.lud
+126.ge
+127.srad
+128.heartwall
+140.bplustree
+
+"Base Other Flags"
+101.tpacf," No flags used"
+103.stencil
+104.lbm
+110.fft
+112.spmv
+114.mriq
+116.histo
+117.bfs
+118.cutcp
+120.kmeans
+121.lavamd
+122.cfd
+123.nw
+124.hotspot
+125.lud
+126.ge
+127.srad
+128.heartwall
+140.bplustree
+
+"Base Forbidden Flags"
+101.tpacf
+103.stencil
+104.lbm
+110.fft
+112.spmv
+114.mriq
+116.histo
+117.bfs
+118.cutcp
+120.kmeans
+121.lavamd
+122.cfd
+123.nw
+124.hotspot
+125.lud
+126.ge
+127.srad
+128.heartwall
+140.bplustree
+
+"Base Unknown Flags"
+101.tpacf," g++"," g++"," -O2"," -I/usr/local/cuda/include"," -O2"," -L/usr/local/cuda/lib64 -lOpenCL"
+103.stencil
+104.lbm
+110.fft
+112.spmv
+114.mriq
+116.histo
+117.bfs
+118.cutcp
+120.kmeans
+121.lavamd
+122.cfd
+123.nw
+124.hotspot
+125.lud
+126.ge
+127.srad
+128.heartwall
+140.bplustree
+
+"Peak Runtime Environment"
+101.tpacf
+103.stencil
+104.lbm
+110.fft
+112.spmv
+114.mriq
+116.histo
+117.bfs
+118.cutcp
+120.kmeans
+121.lavamd
+122.cfd
+123.nw
+124.hotspot
+125.lud
+126.ge
+127.srad
+128.heartwall
+140.bplustree
+
+"Peak Compiler Invocation"
+101.tpacf
+103.stencil
+104.lbm
+110.fft
+112.spmv
+114.mriq
+116.histo
+117.bfs
+118.cutcp
+120.kmeans
+121.lavamd
+122.cfd
+123.nw
+124.hotspot
+125.lud
+126.ge
+127.srad
+128.heartwall
+140.bplustree
+
+"Peak Portability Flags"
+101.tpacf
+103.stencil
+104.lbm
+110.fft
+112.spmv
+114.mriq
+116.histo
+117.bfs
+118.cutcp
+120.kmeans
+121.lavamd
+122.cfd
+123.nw
+124.hotspot
+125.lud
+126.ge
+127.srad
+128.heartwall
+140.bplustree
+
+"Peak Optimization Flags"
+101.tpacf
+103.stencil
+104.lbm
+110.fft
+112.spmv
+114.mriq
+116.histo
+117.bfs
+118.cutcp
+120.kmeans
+121.lavamd
+122.cfd
+123.nw
+124.hotspot
+125.lud
+126.ge
+127.srad
+128.heartwall
+140.bplustree
+
+"Peak Other Flags"
+101.tpacf
+103.stencil
+104.lbm
+110.fft
+112.spmv
+114.mriq
+116.histo
+117.bfs
+118.cutcp
+120.kmeans
+121.lavamd
+122.cfd
+123.nw
+124.hotspot
+125.lud
+126.ge
+127.srad
+128.heartwall
+140.bplustree
+
+"Peak Forbidden Flags"
+101.tpacf
+103.stencil
+104.lbm
+110.fft
+112.spmv
+114.mriq
+116.histo
+117.bfs
+118.cutcp
+120.kmeans
+121.lavamd
+122.cfd
+123.nw
+124.hotspot
+125.lud
+126.ge
+127.srad
+128.heartwall
+140.bplustree
+
+"Peak Unknown Flags"
+101.tpacf
+103.stencil
+104.lbm
+110.fft
+112.spmv
+114.mriq
+116.histo
+117.bfs
+118.cutcp
+120.kmeans
+121.lavamd
+122.cfd
+123.nw
+124.hotspot
+125.lud
+126.ge
+127.srad
+128.heartwall
+140.bplustree
+
+ERRORS
+
+##############################################################################
+"#   INVALID RUN INVALID RUN INVALID RUN INVALID RUN INVALID RUN INVALID RUN  #"
+"#                                                                            #"
+"# 'reportable' flag not set during run                                       #"
+"# 123.nw (base) did not have enough runs!                                    #"
+"# 103.stencil (base) did not have enough runs!                               #"
+"# 104.lbm (base) did not have enough runs!                                   #"
+"# 121.lavamd (base) did not have enough runs!                                #"
+"# 101.tpacf (base) did not have enough runs!                                 #"
+"# 114.mriq (base) did not have enough runs!                                  #"
+"# 110.fft (base) did not have enough runs!                                   #"
+"# 124.hotspot (base) did not have enough runs!                               #"
+"# 125.lud (base) did not have enough runs!                                   #"
+"# 128.heartwall (base) did not have enough runs!                             #"
+"# 127.srad (base) did not have enough runs!                                  #"
+"# 140.bplustree (base) did not have enough runs!                             #"
+"# 112.spmv (base) did not have enough runs!                                  #"
+"# 126.ge (base) did not have enough runs!                                    #"
+"# 120.kmeans (base) did not have enough runs!                                #"
+"# 116.histo (base) did not have enough runs!                                 #"
+"# 118.cutcp (base) did not have enough runs!                                 #"
+"# 117.bfs (base) did not have enough runs!                                   #"
+"# 122.cfd (base) did not have enough runs!                                   #"
+"# Unknown flags were used! See                                               #"
+"#      http://www.spec.org/accel/Docs/runspec.html#flagsurl                  #"
+"# for information about how to get rid of this error.                        #"
+"#                                                                            #"
+"#   INVALID RUN INVALID RUN INVALID RUN INVALID RUN INVALID RUN INVALID RUN  #"
+##############################################################################
+----------------
+"For questions about","this result, please","contact the tester.",
+"For other inquiries,","please contact",webmaster@spec.org.,
+"Copyright 2015-2021 Standard","Performance Evaluation",Corporation,
+"Tested with SPEC ACCEL ","v1.3.  Report","generated on ","Fri Jan  8 20:15:03 2021","by SPEC ACCEL CSV","formatter v2897."
