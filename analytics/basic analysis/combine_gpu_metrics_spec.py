@@ -8,6 +8,7 @@ import sys
 #path = '/mnt/c/rf/lbnl/data/SPEC/P100/dvfs/dvfs_profile/result/'
 p100_spec_runtime_file_path = 'C:/rf/lbnl/data/SPEC/P100/dvfs/dvfs_spec/SPEC-DVFS-RUNTIME_P100.csv'
 v100_spec_runtime_file_path = 'C:/rf/lbnl/data/SPEC/V100/dvfs/dvfs_spec/SPEC-DVFS-RUNTIME_V100.csv'
+
 # os.chdir('/mnt/c/rf/lbnl/data/phase2/p100-1/results') #/mnt/c/rf/cs
 # path = '/mnt/c/rf/lbnl/data/phase2/p100-1/results/'
 # os.chdir('/mnt/c/rf/lbnl/data/phase2/v100-1/results') #/mnt/c/rf/cs
@@ -29,8 +30,12 @@ v100_freqs = [135, 142, 150, 157, 165, 172, 180, 187, 195, 202, 210, 217, 225, 2
 app_id_dic = {"tpacf":'101',"stencil":'103' ,"lbm":'104' ,"fft":'110' ,"spmv":'112' ,"mriq":'114' ,"histo":'116' ,"bfs":'117' ,"cutcp":'118' ,"kmeans":'120' ,"lavamd":'121' ,"cfd":'122' ,"nw":'123' ,"hotspot":'124' ,"lud":'125' ,"ge":'126' ,"srad":'127' ,"heartwall":'128' ,"bplustree":'140'}
 app_type_dic = {"tpacf":1,"stencil":1 ,"lbm":1 ,"fft":1 ,"spmv":1 ,"mriq":1 ,"histo":0 ,"bfs":1 ,"cutcp":1 ,"kmeans":0 ,"lavamd":1 ,"cfd":1 ,"nw":1 ,"hotspot":1 ,"lud":1 ,"ge":1 ,"srad":0 ,"heartwall":1 ,"bplustree":1}
 # read SPEC run times of all apps in a data frame:
-v100_runtime_df = pd.read_csv(v100_spec_runtime_file_path,sep=r'\s*,\s*',engine='python')
-p100_runtime_df = pd.read_csv(p100_spec_runtime_file_path,sep=r'\s*,\s*',engine='python')
+# v100_runtime_df = pd.read_csv(v100_spec_runtime_file_path,sep=r'\s*,\s*',engine='python')
+# p100_runtime_df = pd.read_csv(p100_spec_runtime_file_path,sep=r'\s*,\s*',engine='python')
+
+def get_app_freq_runtime(app,f):
+    temp_df = v100_runtime_df[(v100_runtime_df['Benchmarks'] == app) & (v100_runtime_df['Core Frequency (MHz)'] == f)]
+    return temp_df.iloc[0]['EstBaseRunTime']
 
 def app_SPEC_runtime(app,f,run_time_df,loc):
     id = app_id_dic[app]
@@ -45,7 +50,7 @@ def clean_col(x):
         return(x.replace(x.split(' ')[1], ''))
     return(x)
 
-def r2rAVG(d1,d2,d3):
+def r2rAVG(d1,d2,d3,f):
     cols = list(d1.columns)
     cols.remove('pstate')
     cols.remove('index')
@@ -78,12 +83,19 @@ def r2rAVG(d1,d2,d3):
             d1[col] = d1[col].apply(clean_col).astype(datatype)
             d2[col] = d2[col].apply(clean_col).astype(datatype)
             d3[col] = d3[col].apply(clean_col).astype(datatype)
+            if col == 'clocks.current.sm [MHz]':
+                hz = int (f)
+                print ('HZ:', hz)
+                print ('COL',d1[col])
+                d1[col] = hz
+                d2[col] = hz
+                d3[col] = hz
             df[col] = ((d1[col] + d2[col] + d3[col])/3).astype(datatype)
     
     df.reset_index(inplace=True,drop=True)
     return df
 
-def readFile(path,file):
+def readFile(path,file,freq):
     rSize = []
     r1 = pd.read_csv(path+file+'-0',sep=r'\s*,\s*',engine='python')
     r1.fillna(method ='pad')
@@ -112,63 +124,66 @@ def readFile(path,file):
     # r2.reset_index()
     # r3.reset_index()
 
-    return r2rAVG (r1,r2,r3)
+    return r2rAVG (r1,r2,r3,freq)
 
 
 def combineCSVData (p100_path, v100_path):
-    os.chdir(p100_path)
-    all_filenames = [i for i in glob.glob('*')]
+    # os.chdir(p100_path)
+    # all_filenames = [i for i in glob.glob('*')]
     files = []
     count = 0
 
-    for f in all_filenames:
+    # for f in all_filenames:
       
-        if (f.split('-')[-1] != '0'):
-            continue
-        count += 1
-        sArr = f.split('-')
-        freq = sArr[-2]
-        app = sArr[-3]
-        del sArr[-1]
-        fname = '-'.join(sArr)
-        file = readFile(p100_path,fname)
-        rows = len(file.index)
-        print (count,app)
-        # add TDP column
-        tdp = [250 for i in range(rows)]
-        file['TDP'] = tdp
+    #     if (f.split('-')[-1] != '0'):
+    #         continue
+    #     count += 1
+    #     sArr = f.split('-')
+    #     freq = sArr[-2]
+    #     app = sArr[-3]
+    #     del sArr[-1]
+    #     fname = '-'.join(sArr)
+    #     file = readFile(p100_path,fname)
+    #     rows = len(file.index)
+    #     print (count,app)
+    #     # add TDP column
+    #     tdp = [250 for i in range(rows)]
+    #     file['TDP'] = tdp
 
-        transistors = 15.3
-        cores = 56
-        die_size = 610
-        arch = 'P100'
+    #     transistors = 15.3
+    #     cores = 56
+    #     die_size = 610
+    #     arch = 'P100'
 
-        transistors_list = [transistors for j in range(rows)]
-        cores_list = [cores for k in range(rows)]
-        diesize_list = [die_size for l in range(rows)]
-        arch_list = [arch for m in range(rows)]
+    #     transistors_list = [transistors for j in range(rows)]
+    #     cores_list = [cores for k in range(rows)]
+    #     diesize_list = [die_size for l in range(rows)]
+    #     arch_list = [arch for m in range(rows)]
         
-        file['transistors'] = transistors_list
-        file['cores'] = cores_list
-        file['die_size'] = diesize_list
-        file['arch'] = arch_list
+    #     file['transistors'] = transistors_list
+    #     file['cores'] = cores_list
+    #     file['die_size'] = diesize_list
+    #     file['arch'] = arch_list
 
-        run_time = app_SPEC_runtime(app,freq,p100_runtime_df,p100_freqs.index(int(freq)))
-        run_time_arr = [run_time for o in range(rows)]
-        file['base_run_time'] = run_time_arr
+    #     run_time = app_SPEC_runtime(app,freq,p100_runtime_df,p100_freqs.index(int(freq)))
+    #     run_time_arr = [run_time for o in range(rows)]
+    #     file['base_run_time'] = run_time_arr
 
-        app_id = app_type_dic[app]
-        app_type = [app_id for q in range(rows)]
-        file['app_type'] = app_type
+    #     app_id = app_type_dic[app]
+    #     app_type = [app_id for q in range(rows)]
+    #     file['app_type'] = app_type
 
-        files.append(file)
+    #     files.append(file)
     
     # # V100
     os.chdir(v100_path)
     v100_all_filenames = [i for i in glob.glob('*')]
     
     for f in v100_all_filenames:
-        
+        # FOR DGEMM
+        # if 'dgemm-fp64-run-250' not in f:
+        if 'stream-fp64-run-250' not in f:
+            continue
         if (f.split('-')[-1] != '0'):
             continue
         count += 1
@@ -177,7 +192,7 @@ def combineCSVData (p100_path, v100_path):
         app = sArr[-3]
         del sArr[-1]
         fname = '-'.join(sArr)
-        file = readFile(v100_path,fname)
+        file = readFile(v100_path,fname,freq)
         rows = len(file.index)
         print (count,app)
 
@@ -194,19 +209,21 @@ def combineCSVData (p100_path, v100_path):
         cores_list = [cores for k in range(rows)]
         diesize_list = [die_size for l in range(rows)]
         arch_list = [arch for m in range(rows)]
+        app_list = ['stream' for x in range(rows)]
         
         file['transistors'] = transistors_list
         file['cores'] = cores_list
         file['die_size'] = diesize_list
         file['arch'] = arch_list
+        file['app'] = app_list
 
-        run_time = app_SPEC_runtime(app,freq,v100_runtime_df,v100_freqs.index(int(freq)))
-        run_time_arr = [run_time for o in range(rows)]
-        file['base_run_time'] = run_time_arr
+        # run_time = app_SPEC_runtime(app,freq,v100_runtime_df,v100_freqs.index(int(freq)))
+        # run_time_arr = [run_time for o in range(rows)]
+        # file['base_run_time'] = run_time_arr
 
-        app_id = app_type_dic[app]
-        app_type = [app_id for q in range(rows)]
-        file['app_type'] = app_type
+        # app_id = app_type_dic[app]
+        # app_type = [app_id for q in range(rows)]
+        # file['app_type'] = app_type
 
         files.append(file)
   
@@ -217,10 +234,11 @@ def combineCSVData (p100_path, v100_path):
     combined_csv.reset_index(inplace=True,drop=True)
     print ('total rows:',len(combined_csv.index))
     #export to csv #/mnt/c/rf /home/ghali 
-    combined_csv.to_csv("C:/rf/SPEC_gpu_p100_v100_metrics.csv", encoding='utf-8-sig') #mode='a', header=False,index=False,
-
+    # combined_csv.to_csv("C:/rf/SPEC_gpu_p100_v100_metrics.csv", encoding='utf-8-sig') #mode='a', header=False,index=False,
+    combined_csv.to_csv("C:/rf/stream_v100_metrics.csv", encoding='utf-8-sig')
 # p100_arch = 'P100'
 # v100_arch = 'V100'
 p100_path = 'C:/rf/lbnl/data/SPEC/P100/dvfs/dvfs_profile/'
-v100_path = 'C:/rf/lbnl/data/SPEC/V100/dvfs/dvfs_profile/'
+# v100_path = 'C:/rf/lbnl/data/SPEC/V100/dvfs/dvfs_profile/'
+v100_path = 'C:/rf/lbnl/data/phase2/v100-1/results/'
 combineCSVData(p100_path, v100_path)

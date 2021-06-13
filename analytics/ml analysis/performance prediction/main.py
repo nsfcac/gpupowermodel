@@ -32,7 +32,8 @@ from matplotlib.colors import Normalize
 import sys
 
 sys.path.insert(1, 'C:/rf/projects/gpupowermodel/analytics/ml analysis/ml models')
-
+# sys.path.insert(1,'C:/rf/projects/gpupowermodel/analytics/ml analysis/energy prediction')
+# import energy
 import mlr
 import svr
 import rfr
@@ -75,8 +76,8 @@ def ReadGPUFeatures():
 def RemoveGPUFeatures(p100_data, data):
     # data.drop(['arch','clocks.current.graphics [MHz]','cores','transistors','die_size','TDP','memory.total [MiB]','base_run_time'], inplace = True, axis=1)
     # p100_data.drop(['arch','clocks.current.graphics [MHz]','cores','transistors','die_size','TDP','memory.total [MiB]','base_run_time'], inplace = True, axis=1)
-    data.drop(['arch','clocks.current.graphics [MHz]','TDP','memory.total [MiB]','base_run_time'], inplace = True, axis=1)
-    p100_data.drop(['arch','clocks.current.graphics [MHz]','TDP','memory.total [MiB]','base_run_time'], inplace = True, axis=1)
+    data.drop(['arch','clocks.current.graphics [MHz]','TDP','memory.total [MiB]'], inplace = True, axis=1) #'base_run_time'
+    p100_data.drop(['arch','clocks.current.graphics [MHz]','TDP','memory.total [MiB]'], inplace = True, axis=1)
 
     # data['timestamp'] = pd.to_datetime(data['timestamp']).astype(np.int64) // 10**9
     # p100_data['timestamp'] = pd.to_datetime(p100_data['timestamp']).astype(np.int64) // 10**9
@@ -121,57 +122,62 @@ def Plt_GPU_Mem_Util(p100_data, data):
     plt.savefig('C:/rf/results/apps_gpu_mem_utilization.png',transparent=True, bbox_inches='tight')
     # plt.show()
 
-def Plt_PWR_VS_Features(data):
+def Plt_PERF_VS_Features(data):
     data_df = data.copy()
-    # apps = ["tpacf","stencil","lbm","fft","spmv","mriq","histo","bfs","cutcp","kmeans","lavamd","cfd","nw","hotspot","lud","ge","srad","heartwall","bplustree"]
+    apps = ["tpacf","stencil","lbm","fft","spmv","mriq","histo","bfs","cutcp","kmeans","lavamd","cfd","nw","hotspot","lud","ge","srad","heartwall","bplustree"]
     # fig, ax = plt.subplots(3, figsize=(8, 10))
     fig, axes = plt.subplots(2, 2, sharey=True)
     plt.style.use('classic')
     sns.set_context("paper", font_scale=2)
-    apps = ["hotspot"]
+    # apps = ["hotspot"]
     for app in apps:
-        d = data_df[(data_df['app'] == app) & (data_df['clocks.current.sm [MHz]'] == 1380)]
+        d = data_df[data_df['app'] == app] # ) & (data_df['clocks.current.sm [MHz]'] == 1380)
         
         grpby = 'utilization.gpu [%]'
         df = d.copy()
         df = df.groupby(grpby).mean()
-        sns.scatterplot(ax=axes[0,0], data=df, x=grpby, y='power.draw [W]', s=35, color="b", marker="s")
+        print ('df size:',df.shape[0])
+        df = df.sort_values(by=[grpby]) #,ascending=False
+        sns.scatterplot(ax=axes[0,0], data=df, x=grpby, y='base_run_time', s=35, color="b", marker="s")
         axes[0,0].set_xlim([-5, 105])
         axes[0,0].set_xlabel( '(a) GPU Utilization (%)',weight='bold',fontsize=10) 
-        axes[0,0].set_ylabel( 'Power (W)',weight='bold',fontsize=10) 
-        axes[0,0].axhline(y=250,linestyle='dashed',c="y",linewidth=1,zorder=0,label='TDP')
-        axes[0,0].legend(loc="lower right", prop={'size': 8})
+        axes[0,0].set_ylabel( 'Run Time (S)',weight='bold',fontsize=10) 
+        # axes[0,0].axhline(y=250,linestyle='dashed',c="y",linewidth=1,zorder=0,label='TDP')
+        # axes[0,0].legend(loc="lower right", prop={'size': 8})
 
         grpby = 'utilization.memory [%]' #'clocks.current.sm [MHz]'  'utilization.gpu [%]'
         df = d.copy()
-        df = df.groupby(grpby).mean().reset_index()        
-        sns.scatterplot(ax=axes[0,1], data=df, x=grpby, y='power.draw [W]', s=35, color="g", marker="d")
+        df = df.groupby(grpby).mean().reset_index()
+        df = df.sort_values(by=[grpby])        
+        sns.scatterplot(ax=axes[0,1], data=df, x=grpby, y='base_run_time', s=35, color="g", marker="d")
         axes[0,1].set_xlim([-5, 105])
         axes[0,1].set_xlabel('(b) Memory Utilization (%)', weight='bold',fontsize=10)
-        axes[0,1].axhline(y=250,linestyle='dashed',c="y",linewidth=1,zorder=0,label='TDP') 
-        axes[0,1].legend(loc="lower right", prop={'size': 8})
+        # axes[0,1].axhline(y=250,linestyle='dashed',c="y",linewidth=1,zorder=0,label='TDP') 
+        # axes[0,1].legend(loc="lower right", prop={'size': 8})
         
         grpby = 'clocks.current.sm [MHz]'
         df = data_df[data_df['app'] == app]
-        df = df.groupby(grpby).max().reset_index()
-        sns.scatterplot(ax=axes[1,0], data=df, x=grpby, y='power.draw [W]', s=50, color="r", marker=".") 
+        df = df.groupby(grpby).mean().reset_index()
+        df = df.sort_values(by=[grpby])
+        sns.scatterplot(ax=axes[1,0], data=df, x=grpby, y='base_run_time', s=50, color="r", marker=".") 
         axes[1,0].set_xlabel( '(c) Core Frequency (MHz)',weight='bold',fontsize=10) 
-        axes[1,0].set_ylabel( 'Power (W)',weight='bold',fontsize=10)
-        axes[1,0].axhline(y=250,linestyle='dashed',c="y",linewidth=1,zorder=0,label='TDP')
-        axes[1,0].legend(loc="lower right", prop={'size': 8})
+        axes[1,0].set_ylabel( 'Run Time (S)',weight='bold',fontsize=10)
+        # axes[1,0].axhline(y=250,linestyle='dashed',c="y",linewidth=1,zorder=0,label='TDP')
+        # axes[1,0].legend(loc="lower right", prop={'size': 8})
 
-        grpby = 'temperature.gpu'
+        grpby = 'power.draw [W]'
         df = d.copy()
         df = df.groupby(grpby).mean().reset_index()
-        sns.scatterplot(ax=axes[1,1], data=df, x=grpby, y='power.draw [W]', s=70, color="m", marker="^")
-        axes[1,1].set_xlabel( u"(d) Temperature(\N{DEGREE SIGN}C)",weight='bold',fontsize=10)
-        axes[1,1].axhline(y=250,linestyle='dashed',c="y",linewidth=1,zorder=0,label='TDP')
-        axes[1,1].legend(loc="lower right", prop={'size': 8})
+        df = df.sort_values(by=[grpby])
+        sns.scatterplot(ax=axes[1,1], data=df, x=grpby, y='base_run_time', s=70, color="m", marker="^")
+        axes[1,1].set_xlabel( "(d) Power (W)",weight='bold',fontsize=10)
+        # axes[1,1].axhline(y=250,linestyle='dashed',c="y",linewidth=1,zorder=0,label='TDP')
+        # axes[1,1].legend(loc="lower right", prop={'size': 8})
 
         fig.tight_layout()
         # plt.rcParams['axes.grid'] = True
         # plt.grid(True)
-        plt.savefig('C:/rf/results/pwr-vs-features.png') #transparent=True
+        plt.savefig('C:/rf/results/misc/perf/perf-vs-features'+app+'.png') #transparent=True
 
 
 
@@ -214,10 +220,10 @@ p100_data, data = RemoveGPUFeatures(p100_data, data)
 # cols = ['power.draw [W]', 'app','utilization.gpu [%]','utilization.memory [%]','clocks.current.sm [MHz]']
 # cols = ['power.draw [W]', 'app','utilization.gpu [%]','utilization.memory [%]','clocks.current.sm [MHz]','timestamp','temperature.gpu','clocks.current.memory [MHz]','memory.used [MiB]','memory.free [MiB]']        
 # cls = ['power.draw [W]', 'app','utilization.gpu [%]','utilization.memory [%]','clocks.current.sm [MHz]','timestamp','temperature.gpu','clocks.current.memory [MHz]','memory.used [MiB]','memory.free [MiB]']
-cls = ['power.draw [W]', 'app','utilization.gpu [%]','utilization.memory [%]','clocks.current.sm [MHz]']
-# ,'die_size','transistors','cores' ,'timestamp','temperature.gpu' ,'cores'
+cls = ['base_run_time', 'app', 'power.draw [W]','utilization.gpu [%]','utilization.memory [%]','clocks.current.sm [MHz]']
+# ,'die_size','transistors','cores' ,'timestamp','temperature.gpu' 
 n = 0
-n_features = 7
+n_features = 2
 for i in range(n_features):
     if i == 1:
         break
@@ -239,7 +245,7 @@ for i in range(n_features):
     # print(data.shape[0])
     # print(gpu_data.shape[0])
 
-    # Plt_PWR_VS_Features(data)
+    # Plt_PERF_VS_Features(data)
     # sys.exit(0)
     
     # gpu_data = data[data['utilization.gpu [%]'] > 0]
@@ -262,8 +268,8 @@ for i in range(n_features):
     data = data.groupby(['app', 'clocks.current.sm [MHz]']).mean().reset_index()
     gpu_data = pd.concat([p100_data,data]).reset_index()
 
-    if num_features == '2_features_':
-        cols = ['power.draw [W]', 'app','utilization.gpu [%]','utilization.memory [%]']
+    # if num_features == '2_features_':
+        # cols = ['power.draw [W]', 'app','utilization.gpu [%]','utilization.memory [%]']
     p100_data = p100_data.reindex(columns=cols)
     data = data.reindex(columns=cols)
     gpu_data = gpu_data.reindex(columns=cols)
@@ -271,6 +277,12 @@ for i in range(n_features):
     data.rename(columns={'power.draw [W]': 'power.draw (W)','utilization.gpu [%]':'utilization.gpu (%)','utilization.memory [%]':'utilization.memory (%)','clocks.current.sm [MHz]':'clocks.current.sm (MHz)'}, inplace=True)
     gpu_data.rename(columns={'power.draw [W]': 'power.draw (W)','utilization.gpu [%]':'utilization.gpu (%)','utilization.memory [%]':'utilization.memory (%)','clocks.current.sm [MHz]':'clocks.current.sm (MHz)'}, inplace=True)
     
+    p100_data.drop(['power.draw (W)','clocks.current.sm (MHz)'], inplace = True, axis=1)
+    data.drop(['power.draw (W)','clocks.current.sm (MHz)'], inplace = True, axis=1)
+    gpu_data.drop(['power.draw (W)','clocks.current.sm (MHz)'], inplace = True, axis=1)
+    
+    num_features = '2_features_'
+
     data.fillna(method='pad')
     p100_data.fillna(method='pad')
     gpu_data.fillna(method='pad')
@@ -317,21 +329,20 @@ for i in range(n_features):
     # X_p100 = sc_x.fit_transform(X_p100.astype(float))
     '''
 
-    # pltPath = 'C:/rf/results/svr/'
+    pltPath = 'C:/rf/results/svr/perf/'
     # svr.app_fit_predict(data,x,y,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath)
     # svr.global_fit_predict(data,x,y,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath)
     # svr.crossarch_app_fit_predict(gpu_data,x_gpu,y_gpu,p100_data,data,x,y,x_p100,y_p100,x_p100_df,y_p100_df,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath)
-    # pltPath = 'C:/rf/results/inter-arch/'
-    pltPath = 'C:/rf/results/rfr/'
-    label = 'Power (S)'
-    # rfr.app_fit_predict(data,x,y,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath)
-    # rfr.global_fit_predict(data,x,y,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath)
+    pltPath = 'C:/rf/results/rfr/perf/'
+    label = 'Run Time (S)'
+    rfr.app_fit_predict(data,x,y,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath,label)
+    rfr.global_fit_predict(data,x,y,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath,label)
     rfr.crossarch_app_fit_predict(gpu_data,x_gpu,y_gpu,p100_data,data,x,y,x_p100,y_p100,x_p100_df,y_p100_df,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath,label)
-    # pltPath = 'C:/rf/results/mlr/'
+    pltPath = 'C:/rf/results/mlr/perf/'
     # mlr.app_fit_predict(data,x,y,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath)
     # mlr.global_fit_predict(data,x,y,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath)
     # mlr.crossarch_app_fit_predict(gpu_data,x_gpu,y_gpu,p100_data,data,x,y,x_p100,y_p100,x_p100_df,y_p100_df,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath)
-    # pltPath = 'C:/rf/results/xgbr/'
+    pltPath = 'C:/rf/results/xgbr/perf/'
     # xgbr.app_fit_predict(data,x,y,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath)
     # xgbr.global_fit_predict(data,x,y,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath)
     # xgbr.crossarch_app_fit_predict(gpu_data,x_gpu,y_gpu,p100_data,data,x,y,x_p100,y_p100,x_p100_df,y_p100_df,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath)
