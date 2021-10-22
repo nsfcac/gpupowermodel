@@ -1,7 +1,7 @@
 import pandas as pd
 import sys
 from sklearn import linear_model
-import tkinter as tk
+# import tkinter as tk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from sklearn.model_selection import train_test_split
@@ -64,7 +64,7 @@ def Plt_Importance(data, importance, num_features, app, ls, ts, pltPath):
 
 def new_app_fit_predict(gpu_data,x_gpu,y_gpu,p100_data,data,x,y,x_p100,y_p100,x_p100_df,y_p100_df,x_v100_df,y_v100_df,apps_list,ls,ts,ms,num_features,size,pltPath,x_dgemm, y_dgemm, x_stream, y_stream, label, app1, app2):
     x_p100_train, x_p100_test, y_p100_train, y_p100_test = train_test_split(
-        x_p100, y_p100, test_size=size)
+        x_p100, y_p100, test_size=size, random_state=42)
 
     lm = RandomForestRegressor()
     lm.fit(x, y)
@@ -198,7 +198,7 @@ def new_app_fit_predict(gpu_data,x_gpu,y_gpu,p100_data,data,x,y,x_p100,y_p100,x_
 
 def crossarch_app_fit_predict(gpu_data, x_gpu, y_gpu, p100_data, data, x, y, x_p100, y_p100, x_p100_df, y_p100_df, x_v100_df, y_v100_df, apps_list, ls, ts, ms, num_features, size, pltPath, label='Power (W)'):
     x_p100_train, x_p100_test, y_p100_train, y_p100_test = train_test_split(
-        x_p100, y_p100, test_size=size)
+        x_p100, y_p100, test_size=size, random_state=42)
 
     lm = RandomForestRegressor()
     lm.fit(x_gpu, y_gpu)
@@ -309,9 +309,10 @@ def crossarch_app_fit_predict(gpu_data, x_gpu, y_gpu, p100_data, data, x, y, x_p
     print('R2S = ', r2s_list)
 
 
-def global_fit_predict(data, x_p100, y_p100, x_df, y_df, apps_list, ls, ts, ms, num_features, size, pltPath,label='Power (W)'):
+def global_fit_predict(data, apps_list, ls, ts, ms, num_features,  pltPath,label='Power (W)'):
+# def global_fit_predict(data, x_p100, y_p100, x_df, y_df, apps_list, ls, ts, ms, num_features, size, pltPath,label='Power (W)'):
 
-    # x_p100_train, x_p100_test, y_p100_train, y_p100_test = train_test_split(x_p100, y_p100, test_size=size)
+    # x_p100_train, x_p100_test, y_p100_train, y_p100_test = train_test_split(x_p100, y_p100, test_size=size, random_state=42)
     # data = p100_data.copy()
     train = data.sample(frac=0.5)
     test = data.drop(train.index)
@@ -356,9 +357,9 @@ def global_fit_predict(data, x_p100, y_p100, x_df, y_df, apps_list, ls, ts, ms, 
     medae_list = []
 
     # colors = itertools.cycle(['b', 'c', 'y', 'm', 'r'])
-    colors = iter(cm.rainbow(np.linspace(0, 1, 19)))
+    colors = iter(cm.rainbow(np.linspace(0, 1, 21)))
     markers = ['o', '+', '*', '.', 'x', '_', '|', 's', 'd',
-               '^', 'v', '>', '<', 'p', 'h', 'X', '8', '1', '2']
+               '^', 'v', '>', '<', 'p', 'h', 'X', '8', '1', '2',',','P']
     mrk = 0
     plt.figure(figsize=(12, 11)).add_subplot(111)  # figsize=(10, 10)
     plt.style.use('classic')
@@ -401,7 +402,7 @@ def global_fit_predict(data, x_p100, y_p100, x_df, y_df, apps_list, ls, ts, ms, 
     plt.yticks(fontsize=12, weight='bold')
     plt.grid(True)
     plt.savefig(pltPath+num_features+'-bm-prediction-GLOBAL.png',
-                transparent=True, bbox_inches='tight',dpi=600)
+                transparent=True, bbox_inches='tight',dpi=300)
 
     # Plot original vs predicted powers
     err = [i*100 for i in err]
@@ -431,7 +432,7 @@ def global_fit_predict(data, x_p100, y_p100, x_df, y_df, apps_list, ls, ts, ms, 
                  ',   Max: '+str(round(max(mae_list), 2))+',   Std: '+str(round(np.std(np.array(mae_list)), 2)), fontsize=14,weight='bold', y=0.93)
     
     plt.savefig(pltPath+num_features+'-bm_orig_measured-GLOBAL.png',
-                transparent=True, bbox_inches='tight',dpi=600)
+                transparent=True, bbox_inches='tight',dpi=300)
     # plt.show()
 
     print('avg length:', len(avg_pred_pwr), avg_pred_pwr)
@@ -445,7 +446,6 @@ def global_fit_predict(data, x_p100, y_p100, x_df, y_df, apps_list, ls, ts, ms, 
     print('EVS = ', evs_list)
     print('R2S = ', r2s_list)
 
-
 def app_fit_predict(p100_data, x_p100, y_p100, x_df, y_df, apps_list, ls, ts, ms, num_features, size, pltPath,label='Power (W)'):
 
     lms = {}
@@ -456,7 +456,7 @@ def app_fit_predict(p100_data, x_p100, y_p100, x_df, y_df, apps_list, ls, ts, ms
 
     for app in apps_list:
         x_train, x_test, y_train, y_test = train_test_split(
-            x_df[app], y_df[app], test_size=size)
+            x_df[app], y_df[app], test_size=size, random_state=42)
         lm = RandomForestRegressor()
         lm.fit(x_train, y_train)
         lms[app] = lm

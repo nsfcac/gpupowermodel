@@ -962,8 +962,201 @@ def foi(plthPath):
 
     plt.savefig(plthPath+'pwr_perf_foi.png', transparent=True,dpi=600)
 
-# pltPath = "C:/rf/results/misc/perf/"
-pltPath = "C:/rf/results/misc/"
+def NC(plthPath):
+
+    df = pd.DataFrame({
+        "Metrics":['SM[%]', 'Memory[%]','Power (W)','SM[%]', 'Memory[%]','Power (W)'],
+        "Values":[0.19, 1.11, 97.42,11.57, 93.11, 115.88],
+        "Number of SMs":['Single SM','Single SM','Single SM','Multiple SM','Multiple SM','Multiple SM']
+    })
+    # figsize=(12, 5)
+    # rgbkymc,RdYlGn,RdYlBu_r
+    ax = plt.figure().add_subplot(111)
+    # plt.style.use('classic')
+
+    sns.set_context("paper",font_scale=1.7)    
+    sns.set_style("whitegrid")
+
+    # df = df.sort_values('Models')
+    #  
+    # graph = df.plot(ax=ax, kind='bar', x="GPU Microarchitecture",y="Power (MW)",color=['mediumseagreen','tomato'],legend=False) palette='rocket'
+    graph = sns.barplot(x="Metrics",y="Values",hue='Number of SMs',data=df, palette=['firebrick','forestgreen'])
+    
+    # graph.axhline(20, label='Exascale Power Threshold',lw=2, color='r',ls='--')
+
+    import itertools 
+    hatches = itertools.cycle(['/','+', '-', 'x', '//', '*', 'o', 'O', '.', '\\'])
+    num_locations = len(df['Metrics'].unique())
+    for i, patch in enumerate(graph.patches):
+        if i % num_locations == 0:
+            hatch = next(hatches)
+        patch.set_hatch(hatch)
+
+    # for index, row in df.iterrows():
+        # graph.text(row.name, row['Importance Score'],round(row['Importance Score'],2), color='black', ha="center",fontsize=10,weight='bold')
+    # ncol=2, 
+    ax.legend(loc=0,  fontsize= 12) #bbox_to_anchor=(1, 1)
+    
+    ax.set_xlabel("Metrics",weight='bold',fontsize=ls)
+    ax.set_ylabel('Values',weight='bold',fontsize=ls)
+    plt.tick_params(axis='both', which='major', labelsize=ts)
+    plt.xticks(fontsize=12)
+    plt.grid(True)
+    # change_width(ax, .25)
+
+    # _show_on_single_plot(ax)
+
+    plt.tight_layout()
+
+    plt.savefig(plthPath+'nsight-compute-single-vs-multiple-SMs-utilization.png', transparent=True,dpi=600)
+
+def SMI(plthPath):
+
+    df = pd.DataFrame({
+        "Metrics":['utilization.gpu[%]', 'utilization.memory[%]','Power (W)','utilization.gpu[%]', 'utilization.memory[%]','Power (W)'],
+        "Values":[74, 2, 97.42,62, 11, 115.88],
+        "Number of SMs":['Single SM','Single SM','Single SM','Multiple SM','Multiple SM','Multiple SM']
+    })
+    # figsize=(12, 5)
+    # rgbkymc,RdYlGn,RdYlBu_r
+    ax = plt.figure().add_subplot(111)
+    # plt.style.use('classic')
+
+    sns.set_context("paper",font_scale=1.7)    
+    sns.set_style("whitegrid")
+
+    # df = df.sort_values('Models')
+    #  
+    # graph = df.plot(ax=ax, kind='bar', x="GPU Microarchitecture",y="Power (MW)",color=['mediumseagreen','tomato'],legend=False) palette='rocket'
+    graph = sns.barplot(x="Metrics",y="Values",hue='Number of SMs',data=df, palette=['firebrick','forestgreen'])
+    
+    # graph.axhline(20, label='Exascale Power Threshold',lw=2, color='r',ls='--')
+
+    import itertools 
+    hatches = itertools.cycle(['/','+', '-', 'x', '//', '*', 'o', 'O', '.', '\\'])
+    num_locations = len(df['Metrics'].unique())
+    for i, patch in enumerate(graph.patches):
+        if i % num_locations == 0:
+            hatch = next(hatches)
+        patch.set_hatch(hatch)
+
+    # for index, row in df.iterrows():
+        # graph.text(row.name, row['Importance Score'],round(row['Importance Score'],2), color='black', ha="center",fontsize=10,weight='bold')
+    # ncol=2, 
+    ax.legend(loc=0,  fontsize= 12) #bbox_to_anchor=(1, 1)
+    
+    ax.set_xlabel("Metrics",weight='bold',fontsize=ls)
+    ax.set_ylabel('Values',weight='bold',fontsize=ls)
+    plt.tick_params(axis='both', which='major', labelsize=ts)
+    plt.xticks(fontsize=12)
+    plt.grid(True)
+    # change_width(ax, .25)
+
+    # _show_on_single_plot(ax)
+
+    plt.tight_layout()
+
+    plt.savefig(plthPath+'nvidia-smi-single-vs-multiple-SMs-utilization.png', transparent=True,dpi=600)
+
+def DGEMM_STREAM(plthPath):
+
+    df = pd.DataFrame({
+        "Metrics":['SM[%]', 'Memory[%]','Power (W)','SM[%]', 'Memory[%]','Power (W)'],
+        "Values":[18.37, 97.94, 185.1,99.82, 4.55, 215],
+        "Benchmarks":['BabelStream','BabelStream','BabelStream','DGEMM','DGEMM','DGEMM']
+    })
+    # figsize=(12, 5)
+    # rgbkymc,RdYlGn,RdYlBu_r
+    ax = plt.figure().add_subplot(111)
+    # plt.style.use('classic')
+
+    sns.set_context("paper",font_scale=1.7)    
+    sns.set_style("whitegrid")
+
+    # df = df.sort_values('Models')
+    #  
+    # graph = df.plot(ax=ax, kind='bar', x="GPU Microarchitecture",y="Power (MW)",color=['mediumseagreen','tomato'],legend=False) palette='rocket'
+    graph = sns.barplot(x="Metrics",y="Values",hue='Benchmarks',data=df, palette=['mediumseagreen','tomato'])
+    
+    # graph.axhline(20, label='Exascale Power Threshold',lw=2, color='r',ls='--')
+
+    import itertools 
+    hatches = itertools.cycle(['/','+', '-', 'x', '//', '*', 'o', 'O', '.', '\\'])
+    num_locations = len(df['Metrics'].unique())
+    for i, patch in enumerate(graph.patches):
+        if i % num_locations == 0:
+            hatch = next(hatches)
+        patch.set_hatch(hatch)
+
+    # for index, row in df.iterrows():
+        # graph.text(row.name, row['Importance Score'],round(row['Importance Score'],2), color='black', ha="center",fontsize=10,weight='bold')
+    # ncol=2, 
+    ax.legend(loc=0,  fontsize= 12) #bbox_to_anchor=(1, 1)
+    
+    ax.set_xlabel("Benchmarks",weight='bold',fontsize=ls)
+    ax.set_ylabel('Values',weight='bold',fontsize=ls)
+    plt.tick_params(axis='both', which='major', labelsize=ts)
+    plt.xticks(fontsize=12)
+    plt.grid(True)
+    # change_width(ax, .25)
+
+    # _show_on_single_plot(ax)
+
+    plt.tight_layout()
+
+    plt.savefig(plthPath+'dgemm_stream_utilization_nc_smi.png', transparent=True,dpi=600)
+
+
+def DCGM_DGEMM_STREAM(plthPath):
+
+    df = pd.DataFrame({
+        "Metrics":['Activity[Accumulative]', 'Power (W)','Activity[Accumulative]','Power (W)'],
+        "Values":[0.51, 66.4, 1.58,204.2],
+        "Benchmarks":['STREAM','STREAM','DGEMM','DGEMM']
+    })
+    # figsize=(12, 5)
+    # rgbkymc,RdYlGn,RdYlBu_r
+    ax = plt.figure().add_subplot(111)
+    # plt.style.use('classic')
+
+    sns.set_context("paper",font_scale=1.7)    
+    sns.set_style("whitegrid")
+
+    # df = df.sort_values('Models')
+    #  
+    # graph = df.plot(ax=ax, kind='bar', x="GPU Microarchitecture",y="Power (MW)",color=['mediumseagreen','tomato'],legend=False) palette='rocket'
+    graph = sns.barplot(x="Metrics",y="Values",hue='Benchmarks',data=df, palette=['mediumseagreen','tomato'])
+    
+    # graph.axhline(20, label='Exascale Power Threshold',lw=2, color='r',ls='--')
+
+    import itertools 
+    hatches = itertools.cycle(['/','+', '-', 'x', '//', '*', 'o', 'O', '.', '\\'])
+    num_locations = len(df['Metrics'].unique())
+    for i, patch in enumerate(graph.patches):
+        if i % num_locations == 0:
+            hatch = next(hatches)
+        patch.set_hatch(hatch)
+
+    # for index, row in df.iterrows():
+        # graph.text(row.name, row['Importance Score'],round(row['Importance Score'],2), color='black', ha="center",fontsize=10,weight='bold')
+    # ncol=2, 
+    ax.legend(loc=0,  fontsize= 12) #bbox_to_anchor=(1, 1)
+    
+    ax.set_xlabel("Benchmarks",weight='bold',fontsize=ls)
+    ax.set_ylabel('Values (Activity/Power)',weight='bold',fontsize=ls)
+    plt.tick_params(axis='both', which='major', labelsize=ts)
+    plt.xticks(fontsize=12)
+    plt.grid(True)
+    # change_width(ax, .25)
+
+    # _show_on_single_plot(ax)
+
+    plt.tight_layout()
+
+    plt.savefig(plthPath+'dgemm_stream_utilization_dcgm.png', transparent=True,dpi=600)
+    
+pltPath = "C:/rf/results/misc/perf/"
+# pltPath = "/home/ghali/"
 # pwr_label = 'Power Prediction Error (W)'
 # runtime_label = 'Run Time Prediction Error (S)'
 # label = 'Prediction Error'
@@ -972,4 +1165,8 @@ pltPath = "C:/rf/results/misc/"
 # GPUCharacteristic2(pltPath)
 # gpus_pwr_comparison(pltPath)
 # foi(pltPath)
-Plt_models_MAE (pltPath)
+# Plt_models_MAE (pltPath)
+# NC(pltPath)
+# SMI(pltPath)
+# DGEMM_STREAM(pltPath)
+DCGM_DGEMM_STREAM(pltPath)

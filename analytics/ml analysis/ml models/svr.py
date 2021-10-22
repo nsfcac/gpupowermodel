@@ -68,6 +68,7 @@ def crossarch_app_fit_predict(gpu_data, x_gpu, y_gpu, p100_data, data, x, y, x_p
         x_p100, y_p100, test_size=size)
 
     lm = SVR(kernel='poly', C=100, gamma='auto', degree=1, epsilon=.1, coef0=1)
+    SVR(kernel='rbf')
     lm.fit(x, y)
     # get importance
     # importance = lm.feature_importances_

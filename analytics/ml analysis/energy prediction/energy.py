@@ -4,9 +4,9 @@ from numpy.core.fromnumeric import mean
 import pandas as pd
 from seaborn.palettes import color_palette
 from sklearn import linear_model
-import tkinter as tk 
+# import tkinter as tk 
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+# from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 # def toggle_fs(dummy=None):
@@ -1240,7 +1240,8 @@ def remove_2_apps (data,apps):
 # mcdm()
 # edp()
 # plt_edp()
-Plt_Single_GPU_Mem_Util_UR_Box()
+# Plt_Single_GPU_Mem_Util_UR_Box()
+print ('***energy***')
 sys.exit()
 
 p100_data, data, gpu_data, dgemm, stream = ReadGPUFeatures()
@@ -1368,6 +1369,7 @@ for i in range(n_features):
     if twenty1_apps:
         data = data_dgemm_stream
         apps_list = ["tpacf","stencil","lbm","fft","spmv","mriq","histo","bfs","cutcp","kmeans","lavamd","cfd","nw","hotspot","lud","ge","srad","heartwall","bplustree",'dgemm','stream']
+    
     num_features = '3_features_'
 
     data.fillna(method='pad')

@@ -42,7 +42,7 @@ nRuns=$((numRuns-1))
 			#pushd apps
 			#appPath=$(pwd)/
 			#popd
-                	runCmd="runspec --config=opencl-nvidia-simple.cfg --platform NVIDIA --iterations=1 --device GPU --size=ref --noreportable --tune=base --output_format csv $bm -I" 
+            runCmd="runspec --config=opencl-nvidia-simple.cfg --platform NVIDIA --iterations=1 --device GPU --size=ref --noreportable --tune=base --output_format csv $bm -I" 
 			appCmd="$curPwrLimit $freq $base $runCmd"
 			echo $appCmd
 			../utility/control $appCmd

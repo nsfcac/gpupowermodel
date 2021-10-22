@@ -1,0 +1,94 @@
+#!/bin/bash
+
+numRuns=3
+mode="dvfs"
+arch="GV100" #GV100
+oldfile="changeme"
+m_freq=877
+sleep_interval=10
+t=0
+
+: '
+declare -a progs=("cuda-stream" "matrixMulCUBLAS") #executable name
+declare -a apps=("stream" "dgemm") #any name
+declare -a appParams=(" --device 0 -s 655360000 --triad-only -n 300 > results/BSRUN_OUT" " 72 > results/DGEMMRUN_OUT") 
+
+declare -a progs=("matrixMulCUBLAS") #executable name
+declare -a apps=("dgemm") #any name
+declare -a appParams=(" 72 > results/DGEMMRUN_OUT")
+'
+
+declare -a progs=("cuda-stream") #executable name
+declare -a apps=("stream") #any name
+declare -a appParams=(" --device 0 -s 655360000 --triad-only -n 100 > results/BSRUN_OUT") # ex
+
+// 502 495 487 480 472 465 457 450 442 435 427 420 412 405
+declare -a freqs=(1380 1372 1365 1357 1350 1342 1335 1327 1320 1312 1305 1297 1290 1282 1275 1267 1260 1252 1245 1237 1230 1222 1215 1207 1200 1192 1185 1177 1170 1162 1155 1147 1140 1132 1125 1117 1110 1102 1095 1087 1080 1072 1065 1057 1050 1042 1035 1027 1020 1012 1005 997 990 982 975 967 960 952 945 937 930 922 915 907 900 892 885 877 870 862 855 847 840 832 825 817 810 802 795 787 780 772 765 757 750 742 735 727 720 712 705 697 690 682 675 667 660 652 645 637 630 622 615 607 600 592 585 577 570 562 555 547 540 532 525 517 510)
+
+for c_freq in "${freqs[@]}"
+do
+	./control $m_freq $c_freq
+	nRuns=$((numRuns-1))
+	for i in $(seq 0 $nRuns)
+	do
+		appID=0
+		for app in "${apps[@]}"
+    	do	
+			t=$((t+1))
+			# GET RESULTS WITH NEW FREQUENCY
+			echo "### $app - $c_freq (MHz) - Iteration: $i ###"
+			file="results/$arch-$mode-$app-$c_freq-$i"
+			
+			pushd apps
+			appPath=$(pwd)/
+			popd
+					
+			appCmd="$appPath${progs[$appID]}${appParams[$appID]}"
+			echo $appCmd
+			./profile $appCmd
+
+			cp $oldfile $file
+			rm -f $oldfile
+			sleep $sleep_interval
+
+			# SAVE HBM BW for STREAM
+			if [[ $app == "stream" ]]
+			then
+				v=$(sed -n '13p' results/BSRUN_OUT)
+				tokens=( $v )
+				kernel_time=${tokens[2]}
+				v=$(sed -n '14p' results/BSRUN_OUT)
+				tokens=( $v )
+				bandwidth=${tokens[2]}
+
+				bandwidth="${bandwidth//[$'\t\r\n ']}"
+				kernel_time="${kernel_time//[$'\t\r\n ']}"
+				echo $bandwidth
+				echo $kernel_time
+				printf '%s\n' $c_freq $bandwidth $kernel_time | paste -sd ',' >> results/$arch-dvfs-stream-perf.csv
+			fi
+			
+			# SAVE GFLOPS for DGEMM
+			if [[ $app == "dgemm" ]]
+			then
+				v=$(sed -n '8p' results/DGEMMRUN_OUT)
+				tokens=( $v )
+				gflops=${tokens[1]}
+				kernel_time=${tokens[4]}
+				echo $gflops
+				echo $kernel_time
+				gflops="${gflops//[$'\t\r\n ']}"
+				kernel_time="${kernel_time//[$'\t\r\n ']}"
+				printf '%s\n' $c_freq $gflops $kernel_time | paste -sd ',' >> results/$arch-dvfs-dgemm-perf.csv
+			fi
+			appID=$((appID+1))
+		done #apps
+   	done #runs
+done #freqs
+
+echo "DONE!!!"
+
+# revert the core frequency
+c_freq=1380
+./control $m_freq $c_freq
+echo $t

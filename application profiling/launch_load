@@ -1,0 +1,88 @@
+#!/bin/bash
+
+echo "#####################################################BABEL STREAM#########################################"
+echo "Load test for BABEL STREAM"
+app="stream"
+arch="GV100"
+pwrlimit=250
+numRuns=3
+index=4
+oldfile="changeme"
+prog=cuda-stream
+ar=(26214400 104857600 235929600 419430400 655360000)
+ms=(5120 10240 15360 20480 25600)
+
+for n in $(seq 1 $numRuns)
+do
+   for i in $(seq 0 $index)
+   do
+      echo "Run: $n, Input Size: $i"
+      file="results/$arch-$app-${ms[$i]}-$n"
+   
+      pushd apps
+      appPath=$(pwd)
+      popd      
+      appCmd="$appPath/cuda-stream --device 0 -s ${ar[$i]} --triad-only -n 100 > results/BSRUN_OUT"
+      ./profile $appCmd
+      cp $oldfile $file
+      rm -f $oldfile
+      sleep 10
+
+      v=$(sed -n '13p' results/BSRUN_OUT)
+      tokens=( $v )
+      kernel_time=${tokens[2]}
+      v=$(sed -n '14p' results/BSRUN_OUT)
+      tokens=( $v )
+      bandwidth=${tokens[2]}
+
+      bandwidth="${bandwidth//[$'\t\r\n ']}"
+      kernel_time="${kernel_time//[$'\t\r\n ']}"
+
+      echo $bandwidth
+      echo $kernel_time
+
+      printf '%s\n' ${ms[$i]} $bandwidth $kernel_time | paste -sd ',' >> results/$arch-load-stream-perf.csv
+      
+   done #index
+done # runs
+
+
+echo "##############################CUBLAS DGEMM###########################################"
+
+echo "Load test for CUBLAS DGEMM"
+app="dgemm"
+arch="GV100"
+scale=4
+runs=3
+oldfile="changeme"
+metrixSize=(16 32 48 64 72) #V100 Arch16GB supports upto 72
+prog=matrixMulCUBLAS
+for r in $(seq 1 $runs)
+do
+   for i in $(seq 0 $scale)
+   do
+      echo "Iteration: $r Input Size: ${metrixSize[$i]}"
+      file="results/$arch-$app-${metrixSize[$i]}-$r"
+      pushd apps
+      appPath=$(pwd)
+      popd      
+      appCmd="$appPath/matrixMulCUBLAS ${metrixSize[$i]} > results/DGEMMRUN_OUT"
+      ./profile $appCmd
+      
+      cp $oldfile $file
+      rm -f $oldfile
+      sleep 10
+      
+      v=$(sed -n '8p' results/DGEMMRUN_OUT)
+      tokens=( $v )
+      gflops=${tokens[1]}
+      kernel_time=${tokens[4]}
+
+      echo $gflops
+      echo $kernel_time
+      
+      gflops="${gflops//[$'\t\r\n ']}"
+      kernel_time="${kernel_time//[$'\t\r\n ']}"
+      printf '%s\n' ${metrixSize[$i]} $gflops $kernel_time | paste -sd ',' >> results/$arch-load-dgemm-perf.csv
+   done #input sizes
+done #runs
