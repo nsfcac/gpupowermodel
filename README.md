@@ -9,7 +9,8 @@ consumption for the launched benchmaring, and c) analyze GPU power consumption p
 These instructions will get you a copy of the project up and intended to run on your GPU-enabled HPC node to:
 * launch GPU benchmarking/workload
 * generate GPU metrics data
-* analye GPU power consumption pattern of the benchmaring/workload. 
+* analye GPU power consumption pattern of the benchmaring/workload
+* visualize the collected data. 
 See deployment for notes on how to deploy the project on a GPU-enabled HPC system.
 
 ### Prerequisites
@@ -20,7 +21,7 @@ See deployment for notes on how to deploy the project on a GPU-enabled HPC syste
 ## Overall Deployment Framework
 The following diagram shows GPU Power Control & Counters Collection Framework.
 
-![picture alt](imgs/gpu-fw.png "GPU Power Control & Counters Collection Framework")
+![picture alt](images/gpu-fw.png "GPU Power Control & Counters Collection Framework")
 
 The framework consists of three modules:
 1.  Test module includes two directories (applications and data), two scripts (app_loadscaling and app_run2run), and analyze_data. 
@@ -104,6 +105,8 @@ In case of any technical issue in reproducing these results, you are welcome to 
 ## Authors
 
 * Mr. Ghazanfar Ali Sanpal, PhD student, Texas Tech University
+
+* Mr. Mert Side, PhD student, Texas Tech University
 
 * Dr. Sridutt Bhalachandra, Lawrence Berkeley National Laboratory 
 
