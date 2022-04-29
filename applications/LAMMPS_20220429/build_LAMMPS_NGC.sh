@@ -1,11 +1,11 @@
 #!/bin/bash
 
-wget https://lammps.sandia.gov/inputs/in.lj.txt
-export BENCHMARK_DIR=$PWD
+# wget https://lammps.sandia.gov/inputs/in.lj.txt
+# export BENCHMARK_DIR=$PWD
 
-cd $BENCHMARK_DIR
-wget https://gitlab.com/NVHPC/ngc-examples/-/raw/master/lammps/single-node/run_lammps.sh
-chmod +x run_lammps.sh
+# cd $BENCHMARK_DIR
+# wget https://gitlab.com/NVHPC/ngc-examples/-/raw/master/lammps/single-node/run_lammps.sh
+# chmod +x run_lammps.sh
 
 export LAMMPS_TAG=29Oct2020
 #29Sep2021
