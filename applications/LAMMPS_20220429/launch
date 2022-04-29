@@ -1,0 +1,74 @@
+#!/bin/bash
+
+numRuns=3
+mode="dvfs"
+arch="GA100" #GV100
+oldfile="changeme"
+#m_freq=877 #V100
+m_freq=1215 #A100
+sleep_interval=1
+t=0
+
+declare -a progs=("lammps") #executable name
+declare -a apps=("LAMMPS") #any name
+declare -a appParams=(" > results/LAMMPS_RUN_OUT") 
+
+declare -a freqs=(1410 1395 1380 1365 1350 1335 1320 1305 1290 1275 1260 1245 1230 1215 1200 1185 1170 1155 1140 1125 1110 1095 1080 1065 1050 1035 1020 1005 990 975 960 945 930 915 900 885 870 855 840 825 810 795 780 765 750 735 720 705 690 675 660 645 630 615 600 585 570 555 540 525 510)
+
+#declare -a freqs=(1410 510)
+
+for c_freq in "${freqs[@]}"
+do
+  ./control $m_freq $c_freq
+  nRuns=$((numRuns-1))
+  for i in $(seq 0 $nRuns)
+  do
+    appID=0
+    for app in "${apps[@]}"
+      do  
+      t=$((t+1))
+      # GET RESULTS WITH NEW FREQUENCY
+      echo "### $app - $c_freq (MHz) - Iteration: $i ###"
+      file="results/$arch-$mode-$app-$c_freq-$i"
+      
+      #pushd apps
+      #appPath=$(pwd)/
+      #popd
+          
+      #appCmd="$appPath${progs[$appID]}${appParams[$appID]}"
+      #readonly gpu_count=${1:-$(nvidia-smi --list-gpus | wc -l)}
+      #readonly gpu_count=1
+      #readonly input=${LMP_INPUT:-in.lj.txt}
+      #appCmd="mpirun -n ${gpu_count} lmp -k on g ${gpu_count} -sf kk -pk kokkos cuda/aware on neigh full comm device binsize 2.8 -var x 8 -var y 4 -var z 8 -in ${input}${appParams[$appID]}"
+      
+      appCmd="./run_LAMMPS_NGC.sh${appParams[$appID]}"
+
+      echo $appCmd
+      ./profile $appCmd
+
+      cp $oldfile $file
+      rm -f $oldfile
+      sleep $sleep_interval
+
+      # SAVE time for LAMPS
+      if [[ $app == "LAMMPS" ]]
+      then
+        v=$(sed -n '59p' results/LAMMPS_RUN_OUT)
+        tokens=( $v )
+        wall_time=${tokens[3]}
+        echo $wall_time
+        wall_time="${wall_time//[$'\t\r\n ']}"
+        printf '%s\n' $c_freq $wall_time | paste -sd ',' >> results/$arch-dvfs-lammps-perf.csv
+      fi
+      appID=$((appID+1))
+    done #apps
+    done #runs
+done #freqs
+
+echo "DONE!!!"
+
+# revert the core frequency
+#c_freq=1380 #V100
+c_freq=1410 #A100
+./control $m_freq $c_freq
+echo $t

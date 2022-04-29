@@ -1,0 +1,119 @@
+# ApoA1
+
+#
+# select simulation options
+#
+set do_langevin 0    ;# Using Langevin thermostat?
+set do_stochres 0    ;# Using stochastic rescaling thermostat?
+set do_piston 0      ;# Using Langevin piston, along with a thermostat?
+
+# output steps
+# (for CUDA do not perform output more frequently than every 500 steps)
+#
+set outsteps 500     ;# output interval
+set steps    10000   ;# number of simulation steps
+
+# always do PME
+set do_pme 1         ;# Using PME?
+
+# set temperature
+set temp 298         ;# temperature in Kelvin
+
+#
+# input files
+#
+coordinates          apoa1.pdb
+structure            apoa1.psf
+parameters           par_all22_prot_lipid.xplor
+parameters           par_all22_popc.xplor
+
+#
+# simulation parameters
+#
+seed                 74269
+
+# setting initial velocities to temperature
+#
+temperature          $temp
+
+# system-dependent periodic cell definition
+#
+cellBasisVector1     108.8612 0.0 0.0
+cellBasisVector2     0.0 108.8612 0.0
+cellBasisVector3     0.0 0.0 77.758
+cellOrigin           0.0 0.0 0.0
+
+# non-bonded force parameters
+#
+exclude              scaled1-4
+1-4scaling           1.0
+switching            on
+switchdist           10
+cutoff               12
+pairlistdist         13.5
+
+# apply aggressive multiple time stepping
+#
+timestep             2.0
+nonbondedFreq        1
+fullElectFrequency   2  
+
+rigidbonds  all
+useSettle  on
+
+# temperature control options
+#
+if { $do_langevin } {
+  # constant temperature
+  langevin            on     ;# do langevin dynamics
+  langevinDamping     5      ;# damping coefficient (gamma) of 5/ps
+  langevinTemp        $temp
+  langevinHydrogen    off    ;# don't couple langevin bath to hydrogens
+} elseif { $do_stochres } {
+  stochRescale        on
+  stochRescalePeriod  0.5
+  stochRescaleFreq    20
+  stochRescaleTemp    $temp
+}
+
+# pressure control options
+# also need thermostat
+#
+if { $do_piston } {
+  # constant pressure (variable volume)
+  langevinPiston        on
+  langevinPistonTarget  1.01325 ;#  in bar -> 1 atm
+  langevinPistonPeriod  100.
+  langevinPistonDecay   50.
+  langevinPistonTemp    $temp
+
+  useGroupPressure      yes  ;# needed for rigidBonds
+  useFlexibleCell       no
+  useConstantArea       no
+}
+
+# PME grid sizes based on periodic cell sizes
+#
+if { $do_pme } {
+  PME                  on
+  PMEGridSizeX         108
+  PMEGridSizeY         108
+  PMEGridSizeZ         80
+}
+
+
+# output parameters
+#
+outputName           apoa1-output
+
+outputTiming         $outsteps
+outputEnergies       $outsteps
+ldbalancer           none
+
+numsteps             $steps
+
+stepspercycle 200
+pairlistspercycle 40
+margin 8
+SOAintegrate on
+CUDASOAintegrate on
