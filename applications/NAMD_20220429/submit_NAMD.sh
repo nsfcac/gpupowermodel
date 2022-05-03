@@ -10,4 +10,6 @@
 #SBATCH --reservation=ghazanfar
 
 module load gcc cuda
+./build_LAMMPS_NGC.sh # build Singularity container and do a test run
+./clean # remove any results from prior runs and create a results folder
 ./launch

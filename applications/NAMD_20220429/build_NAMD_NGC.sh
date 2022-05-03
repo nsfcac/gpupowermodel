@@ -1,6 +1,6 @@
 #!/bin/bash
 
-wget -O - https://gitlab.com/NVHPC/ngc-examples/raw/master/namd/3.0/get_apoa1.sh | bash
+# wget -O - https://gitlab.com/NVHPC/ngc-examples/raw/master/namd/3.0/get_apoa1.sh | bash
 cd ./apoa1
 
 export NAMD_TAG=3.0-alpha9-singlenode 
