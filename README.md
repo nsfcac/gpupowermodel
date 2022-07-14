@@ -14,7 +14,7 @@ These instructions will get you a copy of the project up and intended to run on 
 See deployment for notes on how to deploy the project on a GPU-enabled HPC system.
 
 ### Prerequisites
-* Install Nvidia CUDA 11 or CUDA 10.1 (This repository has been tested with both CUDA 10.1 and CUDA 11). For details, see [Nvidia CUDA installation](https://docs.nvidia.com/cuda/pdf/CUDA_Installation_Guide_Linux.pdf)
+* Install Nvidia CUDA 10.1 or higher version. For details, see [Nvidia CUDA installation](https://docs.nvidia.com/cuda/pdf/CUDA_Installation_Guide_Linux.pdf)
 * Python 3 with required modules (pandas, matplotlib, and other Python modules)
 * Compiled workload/benchmarking
 
