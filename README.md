@@ -14,8 +14,8 @@ These instructions will get you a copy of the project up and intended to run on 
 See deployment for notes on how to deploy the project on a GPU-enabled HPC system.
 
 ### Prerequisites
-* Install Nvidia CUDA 10.1 or higher version. For details, see [Nvidia CUDA installation](https://docs.nvidia.com/cuda/pdf/CUDA_Installation_Guide_Linux.pdf)
-* Python 3 with required modules (pandas, matplotlib, and other Python modules)
+* Install NVIDIA CUDA Toolkit 10.1 or higher. For details, see [NVIDIA CUDA Installation](https://docs.nvidia.com/cuda/pdf/CUDA_Installation_Guide_Linux.pdf)
+* Python 3 with required modules (e.g., numpy, pandas, matplotlib, etc.)
 * Compiled workload/benchmarking
 
 ## Overall Deployment Framework
@@ -120,4 +120,4 @@ This project is licensed under [BSD 3-Clause License](https://github.com/nsfcac/
 
 ## Acknowledgments
 
-The National Energy Research Scientific Computing Center (NERSC) is a U.S. Department of Energy Office of Science User Facility operated under Contract No. DEAC02-05CH11231. Results presented in this paper were obtained using the Chameleon testbed supported by the National Science Foundation.
+The National Energy Research Scientific Computing Center (NERSC) is a U.S. Department of Energy Office of Science User Facility operated under Contract No. DEAC02- 05CH11231. Results presented in this paper were obtained using the Chameleon testbed supported by the National Science Foundation. This research is supported in part by the National Science Foundation under grant CNS-1817094, OAC-1835892, and CNS-1939140 (A U.S. National Science Foundation Industry-University Cooperative Research Center on Cloud and Autonomic Computing).
